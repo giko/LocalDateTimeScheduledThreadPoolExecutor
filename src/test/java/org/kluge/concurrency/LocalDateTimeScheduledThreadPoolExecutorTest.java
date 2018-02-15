@@ -5,10 +5,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -88,12 +85,9 @@ class LocalDateTimeScheduledThreadPoolExecutorTest {
 
 
     @RepeatedTest(10)
-    public void checkElapsedTime() throws ExecutionException, InterruptedException {
-        long startMillis = nowMillis();
+    public void checkElapsedTime() throws ExecutionException, InterruptedException, TimeoutException {
         LocalDateTimeScheduledThreadPoolExecutor executor = getExecutor();
 
-        executor.schedule(() -> 1, LocalDateTime.now().plusSeconds(1)).get();
-
-        assert nowMillis() - startMillis < 1500 && nowMillis() - startMillis > 1000;
+        executor.schedule(() -> 1, LocalDateTime.now().plusNanos(500)).get(1, TimeUnit.SECONDS);
     }
 }
